@@ -4,6 +4,10 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
+// Onsen specific styling
+import 'onsenui/css/onsenui.css';
+import 'onsenui/css/onsen-css-components.css';
+
 ReactDOM.render(<App />, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change

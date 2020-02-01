@@ -1,0 +1,57 @@
+// "off" or 0 - turn the rule off
+// "warn" or 1 - turn the rule on as a warning (doesnâ€™t affect exit code)
+// "error" or 2 - turn the rule on as an error (exit code is 1 when triggered)
+
+{
+  "extends": [
+    "airbnb-base",
+    "eslint:recommended",
+    "plugin:prettier/recommended",
+    "plugin:react/recommended"
+  ],
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true,
+      "legacyDecorators": true
+    }
+  },
+
+  "env": {
+    "browser": true,
+    "jest": true
+  },
+
+  "plugins": [
+    "react"
+  ],
+
+  "rules": {
+    "one-var": "off",
+    "prefer-const": "error",
+    "no-unused-vars": "warn",
+    "no-underscore-dangle": "off",
+    "no-plusplus": "off",
+    "no-param-reassign": "warn",
+    "no-useless-escape": "warn",
+    "no-restricted-syntax": [
+      "error",
+      "LabeledStatement",
+      "WithStatement"
+    ],
+    "radix": "off",
+    "no-shadow": "warn",
+    "quotes": [2, "single", "avoid-escape"],
+    "consistent-return": "warn",
+    "default-case": "warn",
+    "import/prefer-default-export": "off",
+    "import/extensions": "off",
+    "import/no-unresolved": "2",
+    "react/prop-types": "warn",
+    "no-console": "warn",
+    "import/first": "warn",
+    "react/no-string-refs": "warn",
+    "no-case-declarations": "warn",
+    "spaced-comment": ["error", "always", { "block": { "balanced": true } }]
+  }
+}
