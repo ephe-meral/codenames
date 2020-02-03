@@ -26,7 +26,7 @@ const dedup = (results, inputs) =>
 
 class Word2Vec {
   static nearestAverage(inputs, max = 10) {
-    const vectors = inputs.map(i => model[i]).filter(v => !!v);
+    const vectors = inputs.map(i => model[i.toLowerCase()]).filter(v => !!v);
     const avg = average(vectors);
     const results = avg ? nearest100(avg).slice(0, max) : [];
     return dedup(results, inputs);
