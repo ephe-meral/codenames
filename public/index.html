@@ -51,7 +51,43 @@
 </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
+    <div id="root">
+      <style>
+        .loader-sized {
+          width: 200px;
+          height: 200px;
+        }
+        .loader-center {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          margin: -100px 0 0 -100px;
+        }
+        .loader-rotate {
+          animation: loader-rotation 10s infinite ease;
+        }
+        @keyframes loader-rotation {
+          0% { transform: rotate(0deg); }
+          3% { transform: rotate(90deg); }
+          25% { transform: rotate(90deg); }
+          28% { transform: rotate(180deg); }
+          50% { transform: rotate(180deg); }
+          53% { transform: rotate(270deg); }
+          75% { transform: rotate(270deg); }
+          78% { transform: rotate(359deg); }
+          100% { transform: rotate(359deg); }
+        }
+        .loader-loading {
+          text-align: center;
+          color: darkgray;
+          font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;
+        }
+      </style>
+      <div class="loader-center loader-sized">
+        <img class="loader-sized loader-rotate" src="logo.svg" alt="Loading screen">
+        <p class="loader-loading">LOADING CARDS...</p>
+        </div>
+    </div>
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.
