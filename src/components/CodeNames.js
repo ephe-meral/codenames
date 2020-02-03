@@ -34,7 +34,12 @@ const ColCard = ({ colored, disabled, onClick, word }) => (
       <Button
         css={`
           width: 100%;
-          ${colored ? 'background-color: red' : ''}
+          ${colored
+            ? `
+            background-color: red !important;
+            opacity: 0.3 !important;
+            color: white !important;`
+            : ''}
         `}
         disabled={disabled}
         onClick={onClick}
@@ -56,10 +61,6 @@ const CodeNames = () => {
 
   const cols = !(NUM_CARDS % 3) ? 3 : 2;
   const rows = NUM_CARDS / cols;
-
-  console.log(board);
-  console.log(colors);
-  console.log(selected);
 
   return (
     <Col>
