@@ -8,12 +8,14 @@ const model = Object.keys(data.vectors).reduce((acc, word) => {
   return acc;
 }, {});
 
+const distance = (vectorA, vectorB) => tf.util.distSquared(vectorA.dataSync(), vectorB.dataSync());
+
 const nearest100 = memoize(
   vector =>
     Object.keys(model)
       .map(word => ({
         word,
-        distance: tf.util.distSquared(vector.dataSync(), model[word].dataSync())
+        distance: distance(vector, model[word])
       }))
       .sort((a, b) => a.distance - b.distance)
       .slice(1, 101) // Define 100 max to allow for easier memoization
@@ -30,6 +32,11 @@ class Word2Vec {
     const avg = average(vectors);
     const results = avg ? nearest100(avg).slice(0, max) : [];
     return dedup(results, inputs);
+  }
+
+  static distance(wordA, wordB) {
+    const [vectorA, vectorB] = [model[wordA], model[wordB]];
+    return !vectorA || !vectorB ? NaN : distance(vectorA, vectorB);
   }
 }
 
