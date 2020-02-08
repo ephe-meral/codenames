@@ -1,23 +1,8 @@
 import React, { useState } from 'react';
 import './App.css';
-import { Page, Tab, Tabbar, Toolbar } from 'react-onsenui';
+import { Page, Tab, Tabbar } from 'react-onsenui';
 import { CodeNames } from './components/CodeNames';
 import { Average } from './components/Average';
-
-const TabPage = ({ children, label }) => (
-  <Page
-    renderToolbar={() => (
-      <Toolbar>
-        <div css="font-weight: bold;" className="center">
-          {label}
-        </div>
-      </Toolbar>
-    )}
-    contentStyle={{ padding: '1em' }}
-  >
-    {children}
-  </Page>
-);
 
 const tabs = [
   ['CodeNames', 'md-view-module', <CodeNames />],
@@ -35,7 +20,7 @@ const App = () => {
         index={tab}
         renderTabs={() =>
           tabs.map(([label, icon, component]) => ({
-            content: <TabPage label={label}>{component}</TabPage>,
+            content: component,
             tab: <Tab label={label} icon={icon} />
           }))
         }

@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import styled from 'styled-components/macro';
-import { Button, Card, Col, Row } from 'react-onsenui';
+import { Button, ToolbarButton } from 'react-onsenui';
 import * as data from '../data/codenames187.json';
+import { TabPage } from './TabPage';
 
-const NUM_CARDS = 12;
+const NUM_CARDS = 15;
 
 const addRndWord = selected => {
   if (selected.length >= data.words.length) {
@@ -28,26 +29,28 @@ const selectRndColors = count =>
     .fill(0)
     .map(() => Math.floor(Math.random() * 2));
 
-const ColCard = ({ colored, disabled, onClick, word }) => (
-  <Col>
-    <div css="margin: 0.25em">
-      <Button
-        css={`
-          width: 100%;
-          ${colored
-            ? `
+const CardTitle = styled.p`
+  text-align: center;
+  white-space: normal;
+  line-height: 1em;
+`;
+
+const Card = ({ colored, disabled, onClick, word }) => (
+  <Button
+    css={`
+      width: 100%;
+      ${colored
+        ? `
             background-color: red !important;
             opacity: 0.3 !important;
             color: white !important;`
-            : ''}
-        `}
-        disabled={disabled}
-        onClick={onClick}
-      >
-        <p css="text-align: center;">{word}</p>
-      </Button>
-    </div>
-  </Col>
+        : ''}
+    `}
+    disabled={disabled}
+    onClick={onClick}
+  >
+    <CardTitle lang="en">{word}</CardTitle>
+  </Button>
 );
 
 const CodeNames = () => {
@@ -61,27 +64,37 @@ const CodeNames = () => {
 
   const cols = !(NUM_CARDS % 3) ? 3 : 2;
   const rows = NUM_CARDS / cols;
+  const reload = () => {
+    setBoard(selectRndCards(NUM_CARDS));
+    setColors(selectRndColors(NUM_CARDS));
+    setSelected(Array(NUM_CARDS).fill(0));
+  };
 
   return (
-    <Col>
-      {Array(rows)
-        .fill(null)
-        .map((r, i) => (
-          <Row key={`${i}`}>
-            {Array(cols)
-              .fill(null)
-              .map((c, j) => (
-                <ColCard
-                  key={`${i},${j}`}
-                  colored={!!selected[cols * i + j] && !!colors[cols * i + j]}
-                  disabled={!!selected[cols * i + j]}
-                  word={board[cols * i + j]}
-                  onClick={() => setSelected(Object.assign([...selected], { [cols * i + j]: 1 }))}
-                />
-              ))}
-          </Row>
+    <TabPage
+      label="CodeNames"
+      leftButton={<ToolbarButton onClick={reload}>Reload</ToolbarButton>}
+      rightButton={<ToolbarButton>Hint</ToolbarButton>}
+    >
+      <div
+        className="break-text"
+        css={`
+          display: grid;
+          grid-template: repeat(${rows}, 1fr) / repeat(${cols}, minmax(0, 1fr));
+          grid-gap: 0.5em;
+        `}
+      >
+        {board.map((card, i) => (
+          <Card
+            key={`${i}`}
+            colored={!!selected[i] && !!colors[i]}
+            disabled={!!selected[i]}
+            word={board[i]}
+            onClick={() => setSelected(Object.assign([...selected], { [i]: 1 }))}
+          />
         ))}
-    </Col>
+      </div>
+    </TabPage>
   );
 };
 

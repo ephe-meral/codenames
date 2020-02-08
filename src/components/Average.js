@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components/macro';
 import { Col, List, ListItem, Row, SearchInput } from 'react-onsenui';
 import { Word2Vec } from '../nlp/Word2Vec';
+import { TabPage } from './TabPage';
 
 const ResultList = ({ results, onTap }) => (
   <List
@@ -28,21 +29,23 @@ const Average = () => {
   };
 
   return (
-    <Col css="height: 100%">
-      <Row css="margin-bottom: 0.5em">
-        <SearchInput
-          css="width: 100%"
-          value={input}
-          placeholder="keyword"
-          onChange={event => {
-            update(event.target.value);
-          }}
-        />
-      </Row>
-      <Row>
-        <ResultList results={results} onTap={update} />
-      </Row>
-    </Col>
+    <TabPage label="Average">
+      <Col css="height: 100%">
+        <Row css="margin-bottom: 0.5em">
+          <SearchInput
+            css="width: 100%"
+            value={input}
+            placeholder="keyword"
+            onChange={event => {
+              update(event.target.value);
+            }}
+          />
+        </Row>
+        <Row>
+          <ResultList results={results} onTap={update} />
+        </Row>
+      </Col>
+    </TabPage>
   );
 };
 
