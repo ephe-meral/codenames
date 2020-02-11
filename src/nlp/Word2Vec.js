@@ -1,6 +1,6 @@
 // Adapted from github.com/ml5js/ml5-library/blob/development/src/Word2vec/index.js
 import * as tf from '@tensorflow/tfjs';
-import * as data from '../data/wordvecs10000.json';
+import * as data from '../data/model.json';
 import { memoize } from '../utils/memoize';
 
 const model = Object.keys(data.vectors).reduce((acc, word) => {

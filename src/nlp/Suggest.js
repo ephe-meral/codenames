@@ -58,7 +58,7 @@ class Suggest {
       return `Error: Word(s) not in model - ${word}, ${filteredTop.join(', ')}`;
     }
 
-    return `${assoc[0].word}, ${filteredTop.length} ...(${word}, ${filteredTop.join(', ')})`;
+    return `${assoc[0].word}, ${filteredTop.length + 1} ...(${word}, ${filteredTop.join(', ')})`;
   }
 }
 

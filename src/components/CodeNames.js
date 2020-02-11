@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components/macro';
 import { Button, ToolbarButton } from 'react-onsenui';
-import * as data from '../data/codenames187.json';
+import * as data from '../data/codenames.json';
 import { Suggest } from '../nlp/Suggest';
 import { TabPage } from './TabPage';
 
@@ -85,12 +85,6 @@ const CodeNames = () => {
   const cols = !(NUM_CARDS % 3) ? 3 : 2;
   const rows = NUM_CARDS / cols;
 
-  const reload = () => {
-    setBoard(selectRndCards(NUM_CARDS));
-    setColors(selectRndColors(NUM_CARDS));
-    setSelected(Array(NUM_CARDS).fill(0));
-  };
-
   const nextHint = () => {
     setHint(
       Suggest.getAssociation(
@@ -100,14 +94,21 @@ const CodeNames = () => {
     );
   };
 
+  const reload = () => {
+    setBoard(selectRndCards(NUM_CARDS));
+    setColors(selectRndColors(NUM_CARDS));
+    setSelected(Array(NUM_CARDS).fill(0));
+    nextHint();
+  };
+
   return (
     <TabPage
       label="CodeNames"
-      leftButton={<ToolbarButton onClick={reload}>Reload</ToolbarButton>}
-      rightButton={<ToolbarButton onClick={nextHint}>Hint</ToolbarButton>}
+      leftButton={<ToolbarButton icon="md-refresh" onClick={reload} />}
+      rightButton={<ToolbarButton onClick={nextHint}>Clue</ToolbarButton>}
     >
       <div css="display: flex; flex-direction: column; height: 100%">
-        <p>Hint: {hint}</p>
+        <p>Clue: {hint}</p>
         <div
           className="break-text"
           css={`
