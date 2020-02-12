@@ -30,6 +30,12 @@ const selectRndColors = count =>
     .fill(0)
     .map(() => Math.floor(Math.random() * 2));
 
+const generateClue = (board, colors, selected) =>
+  Suggest.getAssociation(
+    board.filter((c, i) => !!colors[i] && !selected[i]),
+    board.filter((c, i) => !colors[i] && !selected[i])
+  );
+
 const CardTitleContainer = styled.div`
   display: flex;
   position: absolute;
@@ -71,12 +77,7 @@ const CodeNames = () => {
   const [board, setBoard] = useState(selectRndCards(NUM_CARDS));
   const [colors, setColors] = useState(selectRndColors(NUM_CARDS));
   const [selected, setSelected] = useState(Array(NUM_CARDS).fill(0));
-  const [hint, setHint] = useState(
-    Suggest.getAssociation(
-      board.filter((c, i) => !!colors[i] && !selected[i]),
-      board.filter((c, i) => !colors[i] && !selected[i])
-    )
-  );
+  const [clue, setClue] = useState(generateClue(board, colors, selected));
 
   if (NUM_CARDS % 2 && NUM_CARDS % 3) {
     return null;
@@ -85,30 +86,28 @@ const CodeNames = () => {
   const cols = !(NUM_CARDS % 3) ? 3 : 2;
   const rows = NUM_CARDS / cols;
 
-  const nextHint = () => {
-    setHint(
-      Suggest.getAssociation(
-        board.filter((c, i) => !!colors[i] && !selected[i]),
-        board.filter((c, i) => !colors[i] && !selected[i])
-      )
-    );
-  };
-
   const reload = () => {
-    setBoard(selectRndCards(NUM_CARDS));
-    setColors(selectRndColors(NUM_CARDS));
-    setSelected(Array(NUM_CARDS).fill(0));
-    nextHint();
+    const b = selectRndCards(NUM_CARDS);
+    const c = selectRndColors(NUM_CARDS);
+    const s = Array(NUM_CARDS).fill(0);
+    setBoard(b);
+    setColors(c);
+    setSelected(s);
+    setClue(generateClue(b, c, s));
   };
 
   return (
     <TabPage
       label="CodeNames"
       leftButton={<ToolbarButton icon="md-refresh" onClick={reload} />}
-      rightButton={<ToolbarButton onClick={nextHint}>Clue</ToolbarButton>}
+      rightButton={
+        <ToolbarButton onClick={() => setClue(generateClue(board, colors, selected))}>
+          Clue
+        </ToolbarButton>
+      }
     >
       <div css="display: flex; flex-direction: column; height: 100%">
-        <p>Clue: {hint}</p>
+        <p>Clue: {clue}</p>
         <div
           className="break-text"
           css={`
@@ -124,7 +123,11 @@ const CodeNames = () => {
               colored={!!selected[i] && !!colors[i]}
               disabled={!!selected[i]}
               word={board[i]}
-              onClick={() => setSelected(Object.assign([...selected], { [i]: 1 }))}
+              onClick={() => {
+                const s = Object.assign([...selected], { [i]: 1 });
+                setSelected(s);
+                setClue(generateClue(board, colors, s));
+              }}
             />
           ))}
         </div>
