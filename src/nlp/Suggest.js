@@ -1,5 +1,5 @@
 import { memoize } from '../utils/memoize';
-import { Word2Vec } from './Word2Vec';
+import { Euclid } from './Euclid';
 
 const top3 = memoize((word, list) => {
   const l = [...list];
@@ -10,7 +10,7 @@ const top3 = memoize((word, list) => {
   return l
     .map(x => ({
       word: x,
-      distance: Word2Vec.distance(word, x)
+      distance: Euclid.distance(word, x)
     }))
     .sort((a, b) => a.distance < b.distance)
     .slice(0, 2);
@@ -50,7 +50,7 @@ class Suggest {
 
     const filteredTop = top.filter(({ avoid }) => !avoid).map(({ word: w }) => w);
 
-    const assoc = Word2Vec.nearestAverage([word, ...filteredTop], 100).filter(
+    const assoc = Euclid.nearestAverage([word, ...filteredTop], 100).filter(
       x => !toChoose.includes(x) && !toAvoid.includes(x)
     );
 

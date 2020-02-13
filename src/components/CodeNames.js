@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useDebug } from 'react';
 import styled from 'styled-components/macro';
 import { Button, ToolbarButton } from 'react-onsenui';
 import * as data from '../data/codenames.json';
 import { Suggest } from '../nlp/Suggest';
+import { Classify } from '../nlp/Classify';
 import { TabPage } from './TabPage';
 
 const NUM_CARDS = 18;
@@ -77,7 +78,10 @@ const CodeNames = () => {
   const [board, setBoard] = useState(selectRndCards(NUM_CARDS));
   const [colors, setColors] = useState(selectRndColors(NUM_CARDS));
   const [selected, setSelected] = useState(Array(NUM_CARDS).fill(0));
+  const [classifier, setClassifier] = useState(Classify.load(board));
   const [clue, setClue] = useState(generateClue(board, colors, selected));
+
+  useDebug(classifier);
 
   if (NUM_CARDS % 2 && NUM_CARDS % 3) {
     return null;
@@ -90,9 +94,11 @@ const CodeNames = () => {
     const b = selectRndCards(NUM_CARDS);
     const c = selectRndColors(NUM_CARDS);
     const s = Array(NUM_CARDS).fill(0);
+    Classify.unload(classifier);
     setBoard(b);
     setColors(c);
     setSelected(s);
+    setClassifier(Classify.load(b));
     setClue(generateClue(b, c, s));
   };
 
@@ -126,7 +132,9 @@ const CodeNames = () => {
               onClick={() => {
                 const s = Object.assign([...selected], { [i]: 1 });
                 setSelected(s);
-                setClue(generateClue(board, colors, s));
+                setClue(
+                  `${generateClue(board, colors, s)} // ${classifier.classes[board[i]].join(', ')}`
+                );
               }}
             />
           ))}

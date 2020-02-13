@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components/macro';
 import { Col, List, ListItem, Row, SearchInput } from 'react-onsenui';
-import { Word2Vec } from '../nlp/Word2Vec';
+import { Euclid } from '../nlp/Euclid';
 import { TabPage } from './TabPage';
 
 const ResultList = ({ results, onTap }) => (
@@ -25,7 +25,7 @@ const Average = () => {
 
   const update = word => {
     setInput(word);
-    setResults(Word2Vec.nearestAverage(word.trim().split(/\s+/)));
+    setResults(Euclid.nearestAverage(word.trim().split(/\s+/)));
   };
 
   return (
