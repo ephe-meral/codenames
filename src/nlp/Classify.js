@@ -3,27 +3,26 @@ import * as knnClassifier from '@tensorflow-models/knn-classifier';
 import { Model } from './Model';
 
 class Classify {
-  static async load(words) {
+  static load(words, setClassifier) {
     const classifier = knnClassifier.create();
     words.forEach(word => {
       const vec = Model[word];
       vec && classifier.addExample(vec, word);
     });
 
-    const classes = (
-      await Promise.all(
-        Object.keys(Model).map(word =>
-          Classify.classOf({ classifier }, word).then(({ label: c }) => [word, c])
-        )
+    Promise.all(
+      Object.keys(Model).map(word =>
+        Classify.classOf({ classifier }, word).then(({ label: c }) => [word, c])
       )
-    ).reduce((acc, [w, c]) => {
-      const res = acc[c] || [];
-      res.push(w);
-      acc[c] = res;
-      return acc;
-    }, {});
-
-    return { classifier, classes };
+    ).then(cls => {
+      const classes = cls.reduce((acc, [w, c]) => {
+        const res = acc[c] || [];
+        res.push(w);
+        acc[c] = res;
+        return acc;
+      }, {});
+      setClassifier({ classifier, classes, loaded: true });
+    });
   }
 
   static unload({ classifier }) {

@@ -1,4 +1,4 @@
-import React, { useState, useDebug } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components/macro';
 import { Button, ToolbarButton } from 'react-onsenui';
 import * as data from '../data/codenames.json';
@@ -78,10 +78,18 @@ const CodeNames = () => {
   const [board, setBoard] = useState(selectRndCards(NUM_CARDS));
   const [colors, setColors] = useState(selectRndColors(NUM_CARDS));
   const [selected, setSelected] = useState(Array(NUM_CARDS).fill(0));
-  const [classifier, setClassifier] = useState(Classify.load(board));
+  const [classifier, setClassifier] = useState({ classifier: {}, classes: {}, loaded: false });
   const [clue, setClue] = useState(generateClue(board, colors, selected));
 
-  useDebug(classifier);
+  useEffect(() => {
+    Classify.load(board, classifier => {
+      console.log(classifier);
+      setClassifier(classifier);
+    });
+    return () => {
+      Classify.unload(classifier);
+    };
+  }, [board]);
 
   if (NUM_CARDS % 2 && NUM_CARDS % 3) {
     return null;
@@ -113,32 +121,40 @@ const CodeNames = () => {
       }
     >
       <div css="display: flex; flex-direction: column; height: 100%">
-        <p>Clue: {clue}</p>
-        <div
-          className="break-text"
-          css={`
-            display: grid;
-            grid-template: repeat(${rows}, 1fr) / repeat(${cols}, minmax(0, 1fr));
-            grid-gap: 0.5em;
-            height: 100%;
-          `}
-        >
-          {board.map((card, i) => (
-            <Card
-              key={`${i}`}
-              colored={!!selected[i] && !!colors[i]}
-              disabled={!!selected[i]}
-              word={board[i]}
-              onClick={() => {
-                const s = Object.assign([...selected], { [i]: 1 });
-                setSelected(s);
-                setClue(
-                  `${generateClue(board, colors, s)} // ${classifier.classes[board[i]].join(', ')}`
-                );
-              }}
-            />
-          ))}
-        </div>
+        {!classifier.loaded ? (
+          <p>Loading classifier...</p>
+        ) : (
+          <>
+            <p>Clue: {clue}</p>
+            <div
+              className="break-text"
+              css={`
+                display: grid;
+                grid-template: repeat(${rows}, 1fr) / repeat(${cols}, minmax(0, 1fr));
+                grid-gap: 0.5em;
+                height: 100%;
+              `}
+            >
+              {board.map((card, i) => (
+                <Card
+                  key={`${i}`}
+                  colored={!!selected[i] && !!colors[i]}
+                  disabled={!!selected[i]}
+                  word={board[i]}
+                  onClick={() => {
+                    const s = Object.assign([...selected], { [i]: 1 });
+                    setSelected(s);
+                    setClue(
+                      `${generateClue(board, colors, s)} // ${classifier.classes[board[i]].join(
+                        ', '
+                      )}`
+                    );
+                  }}
+                />
+              ))}
+            </div>{' '}
+          </>
+        )}
       </div>
     </TabPage>
   );
