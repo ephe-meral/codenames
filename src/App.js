@@ -5,8 +5,8 @@ import { CodeNames } from './components/CodeNames';
 import { Average } from './components/Average';
 
 const tabs = [
-  ['CodeNames', 'md-view-module', <CodeNames />],
-  ['Average', 'md-view-list', <Average />]
+  ['CodeNames', 'md-view-module', <CodeNames key="CodeNames" />],
+  ['Average', 'md-view-list', <Average key="Average" />]
 ];
 
 const App = () => {
@@ -21,7 +21,7 @@ const App = () => {
         renderTabs={() =>
           tabs.map(([label, icon, component]) => ({
             content: component,
-            tab: <Tab label={label} icon={icon} />
+            tab: <Tab key={label} label={label} icon={icon} />
           }))
         }
       />

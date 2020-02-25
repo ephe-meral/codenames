@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components/macro';
 import { Button, ToolbarButton } from 'react-onsenui';
-import { CodeWords } from '../nlp/Model';
-import { Suggest } from '../nlp/Suggest';
-import { Classify } from '../nlp/Classify';
+import { CodeWords } from '../nlp/CodeWords';
+import { Clue } from '../nlp/Clue';
 import { TabPage } from './TabPage';
 
 const NUM_CARDS = 18;
@@ -31,11 +30,17 @@ const selectRndColors = count =>
     .fill(0)
     .map(() => Math.floor(Math.random() * 2));
 
-const generateClue = (board, colors, selected) =>
-  Suggest.getAssociation(
-    board.filter((c, i) => !!colors[i] && !selected[i]),
-    board.filter((c, i) => !colors[i] && !selected[i])
-  );
+const generateClue = (board, colors, selected) => {
+  const toChoose = board.filter((c, i) => !!colors[i] && !selected[i]);
+  const toAvoid = board.filter((c, i) => !colors[i] && !selected[i]);
+
+  if (!toChoose.length || !toAvoid.length) {
+    return !toChoose.length ? 'You won!' : 'You lost!';
+  }
+
+  const [clue, keys] = Clue.getClue(toChoose, toAvoid);
+  return `${clue}, ${keys.length}`;
+};
 
 const CardTitleContainer = styled.div`
   display: flex;
@@ -78,18 +83,11 @@ const CodeNames = () => {
   const [board, setBoard] = useState(selectRndCards(NUM_CARDS));
   const [colors, setColors] = useState(selectRndColors(NUM_CARDS));
   const [selected, setSelected] = useState(Array(NUM_CARDS).fill(0));
-  const [classifier, setClassifier] = useState({ classifier: {}, classes: {}, loaded: false });
-  const [clue, setClue] = useState(generateClue(board, colors, selected));
+  const [clue, setClue] = useState('...');
 
   useEffect(() => {
-    Classify.load(board, classifier => {
-      console.log(classifier);
-      setClassifier(classifier);
-    });
-    return () => {
-      Classify.unload(classifier);
-    };
-  }, [board]);
+    setClue(generateClue(board, colors, selected));
+  }, [board, colors, selected]);
 
   if (NUM_CARDS % 2 && NUM_CARDS % 3) {
     return null;
@@ -99,15 +97,9 @@ const CodeNames = () => {
   const rows = NUM_CARDS / cols;
 
   const reload = () => {
-    const b = selectRndCards(NUM_CARDS);
-    const c = selectRndColors(NUM_CARDS);
-    const s = Array(NUM_CARDS).fill(0);
-    Classify.unload(classifier);
-    setBoard(b);
-    setColors(c);
-    setSelected(s);
-    setClassifier(Classify.load(b));
-    setClue(generateClue(b, c, s));
+    setBoard(selectRndCards(NUM_CARDS));
+    setColors(selectRndColors(NUM_CARDS));
+    setSelected(Array(NUM_CARDS).fill(0));
   };
 
   return (
@@ -121,40 +113,31 @@ const CodeNames = () => {
       }
     >
       <div css="display: flex; flex-direction: column; height: 100%">
-        {!classifier.loaded ? (
-          <p>Loading classifier...</p>
-        ) : (
-          <>
-            <p>Clue: {clue}</p>
-            <div
-              className="break-text"
-              css={`
-                display: grid;
-                grid-template: repeat(${rows}, 1fr) / repeat(${cols}, minmax(0, 1fr));
-                grid-gap: 0.5em;
-                height: 100%;
-              `}
-            >
-              {board.map((card, i) => (
-                <Card
-                  key={`${i}`}
-                  colored={!!selected[i] && !!colors[i]}
-                  disabled={!!selected[i]}
-                  word={board[i]}
-                  onClick={() => {
-                    const s = Object.assign([...selected], { [i]: 1 });
-                    setSelected(s);
-                    setClue(
-                      `${generateClue(board, colors, s)} // ${classifier.classes[board[i]].join(
-                        ', '
-                      )}`
-                    );
-                  }}
-                />
-              ))}
-            </div>{' '}
-          </>
-        )}
+        <>
+          <p>Clue: {clue}</p>
+          <div
+            className="break-text"
+            css={`
+              display: grid;
+              grid-template: repeat(${rows}, 1fr) / repeat(${cols}, minmax(0, 1fr));
+              grid-gap: 0.5em;
+              height: 100%;
+            `}
+          >
+            {board.map((card, i) => (
+              <Card
+                key={`${i}`}
+                colored={!!selected[i] && !!colors[i]}
+                disabled={!!selected[i]}
+                word={board[i]}
+                onClick={() => {
+                  setSelected(Object.assign([...selected], { [i]: 1 }));
+                  setClue('...');
+                }}
+              />
+            ))}
+          </div>
+        </>
       </div>
     </TabPage>
   );
