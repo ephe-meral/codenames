@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components/macro';
 import { Button, ToolbarButton } from 'react-onsenui';
-import * as data from '../data/codenames.json';
+import { CodeWords } from '../nlp/Model';
 import { Suggest } from '../nlp/Suggest';
 import { Classify } from '../nlp/Classify';
 import { TabPage } from './TabPage';
@@ -9,11 +9,11 @@ import { TabPage } from './TabPage';
 const NUM_CARDS = 18;
 
 const addRndWord = selected => {
-  if (selected.length >= data.words.length) {
+  if (selected.length >= CodeWords.length) {
     return selected;
   }
 
-  const newWord = data.words[Math.floor(Math.random() * data.words.length)];
+  const newWord = CodeWords[Math.floor(Math.random() * CodeWords.length)];
 
   if (selected.find(s => s === newWord)) {
     return addRndWord(selected);

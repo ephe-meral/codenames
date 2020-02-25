@@ -15,7 +15,7 @@ defmodule Script do
     IO.puts(out, "{\"vectors\":{")
 
     # Stream the input line by line and fetch the header first
-    File.stream!("glove.6B.300d.txt")
+    File.stream!("glove.6B.50d.txt")
     |> Stream.filter(&Regex.match?(~r/^[[:lower:]]+\s/, &1))
     |> Stream.map(&String.split(&1, " "))
     |> Stream.filter(fn [word | _] ->
