@@ -8,13 +8,7 @@ A small test app (PWA) implementing a codenames-like game steered by AI/NLP (Wor
 
 [https://codenames-pwa.netlify.com](https://codenames-pwa.netlify.com)
 
-#### run
-
-```
-> git clone ... && cd ...
-> npm install
-> npm start
-```
+Hint: As this is a progressive web app, you can install it to your home screen and use it like any other app. Android will automatically suggest that and in iOS you need to check your Safari export menu when you're on the page.
 
 #### background
 
@@ -25,6 +19,14 @@ For convenience, the goal was to have a web-frontend only version, installable a
 For inspiration, especially the data preparation and rating parts, I mainly read through [Pbatch/Codenames](https://github.com/Pbatch/Codenames) and [thomasahle/codenames](https://github.com/thomasahle/codenames).
 
 The NLP part is based on [ml5](https://ml5js.org) - although only for examples of integrating TensorFlow.js. The rest is simple vector arithmetics.
+
+#### run
+
+```
+> git clone ... && cd ...
+> npm install
+> npm start
+```
 
 #### is it any good?
 
