@@ -4,10 +4,10 @@
   "private": true,
   "dependencies": {
     "@tensorflow/tfjs": "^1.5.2",
-    "onsenui": "^2.10.10",
+    "onsenui": "^2.12.8",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
-    "react-onsenui": "^1.11.2",
+    "react-onsenui": "^1.13.3",
     "react-scripts": "5.0.1",
     "styled-components": "^5.0.0"
   },
